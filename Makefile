@@ -59,15 +59,19 @@ appstore:
 
 	path = Path("3rdparty/onlyoffice/documentserver/web-apps/apps/api/documents/api.js")
 	text = path.read_text()
-	pattern = r"(\n\s*if\s*\(_config\.documentType=='text'\s*\|\|\s*_config\.documentType=='spreadsheet'\s*\|\|\s*_config\.documentType=='presentation'\s*\))"
-	replacement = (
-	    "\n                if (_config.documentType=='text') _config.documentType = 'word';"
-	    "\n                else if (_config.documentType=='spreadsheet') _config.documentType = 'cell';"
-	    "\n                else if (_config.documentType=='presentation') _config.documentType = 'slide';"
-	    "\n                else if (_config.documentType=='pdf') _config.documentType = 'word';"
-	    r"\1"
-	)
-	updated_text, count = re.subn(pattern, replacement, text, count=1)
+	pattern = r"\n(?P<indent>\s*)if\s*\(_config\.documentType=='text'\s*\|\|\s*_config\.documentType=='spreadsheet'\s*\|\|\s*_config\.documentType=='presentation'\s*\)"
+
+	def replacer(match: re.Match[str]) -> str:
+	    indent = match.group("indent")
+	    return (
+	        f"\n{indent}if (_config.documentType=='text') _config.documentType = 'word';"
+	        f"\n{indent}else if (_config.documentType=='spreadsheet') _config.documentType = 'cell';"
+	        f"\n{indent}else if (_config.documentType=='presentation') _config.documentType = 'slide';"
+	        f"\n{indent}else if (_config.documentType=='pdf') _config.documentType = 'word';"
+	        f"{match.group(0)}"
+	    )
+
+	updated_text, count = re.subn(pattern, replacer, text, count=1)
 	if count != 1:
 	    raise SystemExit("documentType normalization target not found in api.js")
 	path.write_text(updated_text)
