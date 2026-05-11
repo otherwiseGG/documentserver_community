@@ -30,6 +30,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\Attribute\NoAdminRequired;
 use OCP\AppFramework\Http\Attribute\NoCSRFRequired;
 use OCP\AppFramework\Http\Attribute\PublicPage;
+use OCP\IRequest;
 use OCP\IURLGenerator;
 
 class ConvertController extends Controller {
@@ -37,16 +38,29 @@ class ConvertController extends Controller {
 	private $urlDecoder;
 	private $urlGenerator;
 
-	public function __construct(DocumentStore $documentStore, URLDecoder $urlDecoder, IURLGenerator $urlGenerator) {
+	public function __construct(
+		string $appName,
+		IRequest $request,
+		DocumentStore $documentStore,
+		URLDecoder $urlDecoder,
+		IURLGenerator $urlGenerator
+	) {
+		parent::__construct($appName, $request);
+
 		$this->documentStore = $documentStore;
 		$this->urlDecoder = $urlDecoder;
 		$this->urlGenerator = $urlGenerator;
 	}
 
 
-    #[NoAdminRequired]
-    #[NoCSRFRequired]
-    #[PublicPage]
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @PublicPage
+	 */
+	#[NoAdminRequired]
+	#[NoCSRFRequired]
+	#[PublicPage]
 	public function convert(bool $async, string $url, string $outputtype, string $filetype, string $title, string $key) {
 		if ($outputtype === $filetype) {
 			return new JSONResponse([

@@ -72,7 +72,7 @@ class DocumentController extends SessionController {
 	private $sessionManager;
 
 	public function __construct(
-		$appName,
+		string $appName,
 		IRequest $request,
 		ChannelFactory $sessionFactory,
 		DocumentStore $documentStore,
@@ -118,14 +118,23 @@ class DocumentController extends SessionController {
 		return self::IDLE_HANDLERS;
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @PublicPage
+	 */
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	#[PublicPage]
 	public function healthCheck() {
 		return new DataResponse(true);
-                //return true;
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @PublicPage
+	 */
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	#[PublicPage]
@@ -147,6 +156,11 @@ class DocumentController extends SessionController {
 		return $response;
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @PublicPage
+	 */
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	#[PublicPage]
@@ -169,6 +183,11 @@ class DocumentController extends SessionController {
 		]);
 	}
 
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @PublicPage
+	 */
 	#[NoAdminRequired]
 	#[NoCSRFRequired]
 	#[PublicPage]
