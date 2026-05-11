@@ -53,6 +53,7 @@ appstore:
 		--output-web="../../fonts" \
 		--selection="../FileConverter/bin/font_selection.bin"
 	sed -i 's/if(yb===d\[a\].ka)/if(d[a]\&\&yb===d[a].ka)/' 3rdparty/onlyoffice/documentserver/sdkjs/*/sdk-all.js
+	python -c "from pathlib import Path; path=Path('3rdparty/onlyoffice/documentserver/web-apps/apps/api/documents/api.js'); text=path.read_text(); old=\"                if (_config.documentType=='text' || _config.documentType=='spreadsheet' ||_config.documentType=='presentation')\\n\"; new=\"                if (_config.documentType=='text') _config.documentType = 'word';\\n                else if (_config.documentType=='spreadsheet') _config.documentType = 'cell';\\n                else if (_config.documentType=='presentation') _config.documentType = 'slide';\\n                else if (_config.documentType=='pdf') _config.documentType = 'word';\\n\" + old; path.write_text(text.replace(old, new, 1))"
 
 version:
 	VERSION=$$(grep -ozP "DocsAPI\.DocEditor\.version\s*=\s*function\(\) *\{\n\s+return\s\'\K(\d+.\d+.\d+)" 3rdparty/onlyoffice/documentserver/web-apps/apps/api/documents/api.js) ;\
